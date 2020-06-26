@@ -45,7 +45,7 @@ class DataLoader:
                 while start + window_length <= len(record):
                     datapoint = record[start:start + window_length]
                     x.append(datapoint)
-                    y.append(label)
+                    y.append(int(label))
                     start += window_length - int(overlap * window_length)
 
         return x, y
@@ -53,5 +53,5 @@ class DataLoader:
 
 if __name__ == '__main__':
     dl = DataLoader()
-    dl.load_files(participants=[1, 2], scenarios=[1, 2], gestures=[1, 2, 3])
+    dl.load_files(participants=[1], scenarios=[1, 2], gestures=[1, 2, 3])
     dl.get_xy(window_length=50, overlap=0.5)
