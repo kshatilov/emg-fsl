@@ -50,6 +50,34 @@ class DataLoader:
 
         return x, y
 
+    def get_xy_train_test(self, window_length=100, overlap=0.5, train_ratio=0.9):
+        train_X = []
+        train_y = []
+        test_X = []
+        test_y = []
+        for label in self.raw_data:
+            if self.raw_data[label] is None:
+                continue
+
+            for record in self.raw_data[label]:
+                start = 0
+                X = []
+                y = []
+                while start + window_length <= len(record):
+                    datapoint = record[start:start + window_length]
+                    X.append(datapoint)
+                    y.append(int(label))
+                    start += window_length - int(overlap * window_length)
+
+                cut = int(len(X) * train_ratio)
+                train_X.extend(X[:cut])
+                train_y.extend(y[:cut])
+                intertwined_gap = int(np.ceil((1 / (1 - overlap)))) - 1
+                test_X.extend(X[cut + intertwined_gap:])
+                test_y.extend(y[cut + intertwined_gap:])
+
+
+        return train_X, train_y, test_X, test_y
 
 if __name__ == '__main__':
     dl = DataLoader()
